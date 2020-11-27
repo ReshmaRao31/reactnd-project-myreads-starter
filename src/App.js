@@ -17,19 +17,24 @@ class BooksApp extends React.Component {
     query: ''
   }
   componentDidMount = () => {
+    this.getAllBooks()
+  };
+
+  getAllBooks = ()=>{
     BooksAPI.getAll()
       .then(books => {
         this.setState({ mybooks: books });
       })
-  };
+  }
   updateBook = (book, shelf) => {
     BooksAPI.update(book, shelf).then((res) => {
-      this.setState((currenyState) => {
-        currenyState.searchedBooks = currenyState.searchedBooks.filter((srbook) => {
-          return srbook['id'] !== book['id'];
+      this.setState((currentState) => {
+        currentState.searchedBooks = currentState.searchedBooks.filter((sbook) => {
+          return sbook['id'] !== book['id'];
         })
       })
     })
+    this.getAllBooks()
   };
 
   resetSearch =() =>{
@@ -47,6 +52,18 @@ class BooksApp extends React.Component {
         if (books.error) {
           this.setState({ searchedBooks: [] });
         } else {
+          this.state.mybooks.map((bookObj) => {
+            books.map((srObj) => {
+              if (srObj['id'] === bookObj['id']) {
+                srObj['shelf'] = bookObj['shelf']
+              }
+              else if(!srObj['shelf']){
+                srObj['shelf'] = "none"
+              }
+              return srObj
+            })
+            return bookObj
+          })
           this.setState({ searchedBooks: books });
         }
       });
