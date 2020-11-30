@@ -28,13 +28,17 @@ class BooksApp extends React.Component {
   }
   updateBook = (book, shelf) => {
     BooksAPI.update(book, shelf).then((res) => {
-      this.setState((currentState) => {
-        currentState.searchedBooks = currentState.searchedBooks.filter((sbook) => {
+      this.setState(currentState => ({
+        searchedBooks : currentState.searchedBooks.filter((sbook) => {
+           return sbook['id'] !== book['id'];
+        }),
+        mybooks : currentState.searchedBooks.filter((sbook) => {
           return sbook['id'] !== book['id'];
-        })
+       }).concat(book)
       })
+      )
+      this.getAllBooks()
     })
-    this.getAllBooks()
   };
 
   resetSearch =() =>{
@@ -68,7 +72,7 @@ class BooksApp extends React.Component {
         }
       });
     } else {
-      this.setState({ searchBooks: [] });
+      this.setState({ searchedBooks: [] });
     }
   };
 
