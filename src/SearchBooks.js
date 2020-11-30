@@ -4,9 +4,6 @@ import Books from './Books'
 import PropTypes from 'prop-types'
 
 class SearchBooks extends Component{
-    componentWillUnmount() {
-        this.props.onSearch('')
-      }
     render() {
         const { searchedBooks, onSearch, query, updateBook, resetSearch } = this.props;
         

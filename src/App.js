@@ -12,15 +12,15 @@ const shelfDetails = [
 ];
 class BooksApp extends React.Component {
   state = {
-    mybooks:[],
-    searchedBooks:[],
+    mybooks: [],
+    searchedBooks: [],
     query: ''
   }
   componentDidMount = () => {
     this.getAllBooks()
   };
 
-  getAllBooks = ()=>{
+  getAllBooks = () => {
     BooksAPI.getAll()
       .then(books => {
         this.setState({ mybooks: books });
@@ -28,20 +28,17 @@ class BooksApp extends React.Component {
   }
   updateBook = (book, shelf) => {
     BooksAPI.update(book, shelf).then((res) => {
-      this.setState(currentState => ({
-        searchedBooks : currentState.searchedBooks.filter((sbook) => {
-           return sbook['id'] !== book['id'];
-        }),
-        mybooks : currentState.searchedBooks.filter((sbook) => {
+      book.shelf = shelf;
+      this.setState(PrevState => ({
+        searchedBooks : PrevState.searchedBooks.filter((sbook) => {
           return sbook['id'] !== book['id'];
-       }).concat(book)
-      })
-      )
-      this.getAllBooks()
+        }),
+        mybooks : PrevState.mybooks.filter((mbook)=> mbook.id !== book.id).concat(book)
+      }))
     })
-  };
+  }
 
-  resetSearch =() =>{
+  resetSearch = () => {
     this.setState({
       query: '',
       searchedBooks: []
@@ -61,7 +58,7 @@ class BooksApp extends React.Component {
               if (srObj['id'] === bookObj['id']) {
                 srObj['shelf'] = bookObj['shelf']
               }
-              else if(!srObj['shelf']){
+              else if (!srObj['shelf']) {
                 srObj['shelf'] = "none"
               }
               return srObj
@@ -77,14 +74,14 @@ class BooksApp extends React.Component {
   };
 
   render() {
-    const {mybooks, searchedBooks, query} = this.state;
+    const { mybooks, searchedBooks, query } = this.state;
     return (
       <div className="app">
         <Route exact path='/' render={() => (
           <ListShelves shelfDetails={shelfDetails} mybooks={mybooks} updateBook={this.updateBook} />
         )} />
         <Route exact path='/search' render={() => (
-          <SearchBooks searchedBooks={searchedBooks} onSearch={this.onSearch} query={query} updateBook={this.updateBook} resetSearch ={this.resetSearch} />
+          <SearchBooks searchedBooks={searchedBooks} onSearch={this.onSearch} query={query} updateBook={this.updateBook} resetSearch={this.resetSearch} />
         )} />
       </div>
     )
